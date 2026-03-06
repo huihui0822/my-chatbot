@@ -37,6 +37,21 @@ yarn-error.log*
 .vercel
 .env*.local
 
+# Cursor IDE
+.cursor/
+
+# VS Code
+.vscode/
+
+# Build artifacts
+*.tsbuildinfo
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
 # Playwright
 /test-results/
 /playwright-report/
