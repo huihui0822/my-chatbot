@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
-    Chatbot (formerly AI Chatbot) is a free, open-source template built with Next.js and the AI SDK that helps you quickly build powerful chatbot applications.
+Chatbot（原 AI Chatbot）是一个免费开源的模板，基于 Next.js 与 AI SDK 构建，可帮助你快速打造功能强大的聊天机器人应用。
 </p>
 
 <p align="center">
