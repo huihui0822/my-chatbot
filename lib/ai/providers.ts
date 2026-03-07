@@ -1,4 +1,4 @@
-import { gateway } from "@ai-sdk/gateway";
+import { createOpenAI } from "@ai-sdk/openai";
 import {
   customProvider,
   extractReasoningMiddleware,
@@ -7,6 +7,13 @@ import {
 import { isTestEnvironment } from "../constants";
 
 const THINKING_SUFFIX_REGEX = /-thinking$/;
+
+// 配置智谱 API（使用 OpenAI 兼容格式）
+const zhipuClient = createOpenAI({
+  baseURL: process.env.OPENAI_API_BASE || "https://open.bigmodel.cn/api/paas/v4",
+  apiKey: process.env.OPENAI_API_KEY,
+  name: "zhipu",
+});
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -37,27 +44,26 @@ export function getLanguageModel(modelId: string) {
     (modelId.includes("reasoning") && !modelId.includes("non-reasoning"));
 
   if (isReasoningModel) {
-    const gatewayModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
-
+    const cleanModelId = modelId.replace(THINKING_SUFFIX_REGEX, "");
     return wrapLanguageModel({
-      model: gateway.languageModel(gatewayModelId),
+      model: zhipuClient.chat(cleanModelId),
       middleware: extractReasoningMiddleware({ tagName: "thinking" }),
     });
   }
 
-  return gateway.languageModel(modelId);
+  return zhipuClient.chat(modelId);
 }
 
 export function getTitleModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("title-model");
   }
-  return gateway.languageModel("google/gemini-2.5-flash-lite");
+  return zhipuClient.chat("glm-3-turbo");
 }
 
 export function getArtifactModel() {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel("artifact-model");
   }
-  return gateway.languageModel("anthropic/claude-haiku-4.5");
+  return zhipuClient.chat("glm-3-turbo");
 }
